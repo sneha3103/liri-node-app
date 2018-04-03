@@ -1,0 +1,23 @@
+{
+  "name": "liri-node-app",
+  "version": "1.0.0",
+  "description": "Created an application called LIRI. LIRI is similar to iPhone's SIRI. However, while SIRI is a Speech Interpretation and Recognition Interface, LIRI is a Language Interpretation and Recognition Interface. LIRI will be a command line node app that takes in parameters and gives you back data. To retrieve the data that will power this app, I will be sending requests to the Twitter, Spotify and OMDB APIs.",
+  "main": "liri.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sneha3103/liri-node-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sneha3103/liri-node-app/issues"
+  },
+  "homepage": "https://github.com/sneha3103/liri-node-app#readme",
+  "dependencies": {
+    "request": "^2.85.0"
+  }
+}
