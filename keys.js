@@ -16,12 +16,4 @@ module.exports.spotify = {
 
 //automatically module.exports equals an empty object
 
-car = {
-    name: Honda,
-    color: Blue,
-}
-
-car.wheels = 4
-//this would add a property of wheels with a value of 4. 
-
 

@@ -1,39 +1,53 @@
 //dependency
 require("dotenv").config();
 
+// Used to access keys in keys.js local file
 var keys = require("./keys.js");
 //whatever is in module.exports will show up in require 
 var request = require("request"); //request is a package that we installed. Node knows its a package because it does not have ./
 
+//NPM module used to read random.txt file
 var fs = require ("fs");
-var Spotify = require("node-spotify-api");
+
+//NPM modules used to access Spotify, Twitter, OMDB API's
+// var Spotify = require("node-spotify-api");
 var Twitter = require("twitter");
-var omdbAPI = require("omdb-client");
+
 
 //Created a user pick variable incase user selects a song or movie with multiple words.
-var userPick = process.argv[2].slice().join(" ");
+var userPick = process.argv[3]
 
 //Created a user command variable for the switch case statement to store what the user inputs - twitter, spotify, omdb, etc. 
 var userCommand = process.argv[2];
 
-var spotify = new Spotify(keys.spotify);
-var client = new Twitter(keys.twitter);
+// var spotify = new Spotify(keys.spotify);
+// var client = new Twitter(keys.twitter);
 
-var secondCommand = process.argv[3];
-console.log(userCommand);
+// console.log(userCommand);
 
 
 switch (userCommand) {
-    case "Twitter":
+    case "my-tweets":
      displayTweet();
     break;
 
-   
+    case "spotify-this-song":
+     displaySpotify();
+    break;
+ 
+    case "movie-this":
+     omdbMovie();
+     console.log("hello");
+    break;
 
-}
+    case "do-what-it-says":
+     doWhatItSays();
+    break;
+
+};
 
 function displayTweet () {
-    console.log("twitter test");
+    // console.log("twitter test");
         var client = new Twitter({
              consumer_key: keys.twitter.consumer_key,
              consumer_secret: keys.twitter.consumer_secret,
@@ -42,7 +56,8 @@ function displayTweet () {
         });
 
         var params = {
-             screen_name: "node.js",
+             screen_name: "SnehaDama",
+             count: 10,
         };
 
         client.get("statuses/user_timeline", params, function (error, tweets, response) {
@@ -54,21 +69,31 @@ function displayTweet () {
 
 };
 
+var Spotify = require("node-spotify-api");
+var spotify = new Spotify(keys.spotify);
 
 function displaySpotify (userPick) {
 
-      var spotify = new Spotify({
-        id: keys.spotify.id,
-        secret: keys.spotify.secret,
-      });
+    //   var Spotify = require("node-spotify-api");
+    //   var spotify = new Spotify(keys.spotify);
+
+      console.log("hello");
        
-      spotify.search({ type: "track", query: "All the Small Things" },          function(err, data) {
+      spotify.search({ 
+          type: "track", 
+          query: userPick, 
+        },    
+        
+          function(err, data) {
             if (err) {
-            return console.log("Error occurred: " + err);
+            return console.log("There is an error: " + err);
+          }
+
+          for (i=0 ; i<data.tracks.items.length; i++){
+              console.log(data.tracks.items[i]);
+              return console.log("for loop happened");
           }
        
-            console.log(data); 
-
       });
 
 }
@@ -85,8 +110,40 @@ function omdbMovie (userPick) {
 
         if (!error && response.statusCode === 200) {
           console.log("Release Year: " + JSON.parse(body).Year);
-        }
+        };
 
-        console.log(response);
+        // console.log(response);
       });
-}
+
+
+      //If the user does not enter a movie choice, make user pick equals to Mr.Nobody. 
+      if(!userPick) {
+          userPick = "Mr. Nobody";
+      }
+};
+
+
+function doWhatItSays () {
+    fs.readFile("random.txt" , "UTF8" , function(error,data) {
+
+        if(error) {
+            // console.log(error);
+        }
+        // console.log(data);
+
+        var dataArr = data.split(",");
+        var command = dataArr[0];
+        var choice = dataArr[1];
+
+        if (command === "movie-this") {
+            userPick = choice;
+            omdbMovie();
+        } else if (command === "spotify-this-song") {
+            userPick = choice;
+            displaySpotify();
+        } else if (command === "my-tweets") {
+            displayTweet();
+
+        }
+    });
+};
