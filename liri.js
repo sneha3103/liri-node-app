@@ -1,29 +1,30 @@
-//dependency
 require("dotenv").config();
 
 // Used to access keys in keys.js local file
 var keys = require("./keys.js");
+
 //whatever is in module.exports will show up in require 
-var request = require("request"); //request is a package that we installed. Node knows its a package because it does not have ./
+//request is a package that we installed. Node knows its a package because it does not have ./
+var request = require("request");
 
 //NPM module used to read random.txt file
 var fs = require ("fs");
 
-//NPM modules used to access Spotify, Twitter, OMDB API's
-// var Spotify = require("node-spotify-api");
+//NPM modules used to access Twitter and Spotify API
+
 var Twitter = require("twitter");
 
-
-//Created a user pick variable incase user selects a song or movie with multiple words.
-var userPick = process.argv[3]
+var Spotify = require("node-spotify-api");
 
 //Created a user command variable for the switch case statement to store what the user inputs - twitter, spotify, omdb, etc. 
 var userCommand = process.argv[2];
 
-// var spotify = new Spotify(keys.spotify);
-// var client = new Twitter(keys.twitter);
+//Created a user pick variable incase user selects a song or movie with multiple words.
+var userPick = process.argv[3]
 
-// console.log(userCommand);
+
+
+// var spotify = new Spotify(keys.spotify);
 
 
 switch (userCommand) {
@@ -47,7 +48,6 @@ switch (userCommand) {
 };
 
 function displayTweet () {
-    // console.log("twitter test");
         var client = new Twitter({
              consumer_key: keys.twitter.consumer_key,
              consumer_secret: keys.twitter.consumer_secret,
@@ -62,20 +62,24 @@ function displayTweet () {
 
         client.get("statuses/user_timeline", params, function (error, tweets, response) {
             if (!error) {
-                console.log(tweets);
-            };
+                console.log("Look at my latest tweets:");
+
+                for (i=0; i < 10; i++) {
+                    console.log(tweets[i].text);
+                }
+            } else {
+                console.log(error);
+            }
         });
-
-
 };
 
-var Spotify = require("node-spotify-api");
-var spotify = new Spotify(keys.spotify);
 
 function displaySpotify (userPick) {
-
-    //   var Spotify = require("node-spotify-api");
-    //   var spotify = new Spotify(keys.spotify);
+    var spotify = new Spotify({
+            id: keys.spotify.id,
+            secret: keys.spotify.secret,
+        
+        });
 
       console.log("hello");
        
@@ -90,7 +94,7 @@ function displaySpotify (userPick) {
           }
 
           for (i=0 ; i<data.tracks.items.length; i++){
-              console.log(data.tracks.items[i]);
+              console.log(data.tracks.items[0]);
               return console.log("for loop happened");
           }
        
@@ -126,11 +130,7 @@ function omdbMovie (userPick) {
 function doWhatItSays () {
     fs.readFile("random.txt" , "UTF8" , function(error,data) {
 
-        if(error) {
-            // console.log(error);
-        }
-        // console.log(data);
-
+    
         var dataArr = data.split(",");
         var command = dataArr[0];
         var choice = dataArr[1];
