@@ -3,7 +3,6 @@ require("dotenv").config();
 // Used to access keys in keys.js local file
 var keys = require("./keys.js");
 
-//whatever is in module.exports will show up in require 
 //request is a package that we installed. Node knows its a package because it does not have ./
 var request = require("request");
 
@@ -19,14 +18,9 @@ var Spotify = require("node-spotify-api");
 //Created a user command variable for the switch case statement to store what the user inputs - twitter, spotify, omdb, etc. 
 var userCommand = process.argv[2];
 
-//Created a user pick variable incase user selects a song or movie with multiple words.
 var userPick = process.argv[3]
 
-
-
-// var spotify = new Spotify(keys.spotify);
-
-
+//Switch Case statement
 switch (userCommand) {
     case "my-tweets":
      displayTweet();
@@ -77,8 +71,7 @@ function displayTweet () {
 function displaySpotify (userPick) {
     var spotify = new Spotify({
             id: keys.spotify.id,
-            secret: keys.spotify.secret,
-        
+            secret: keys.spotify.secret, 
         });
 
       console.log("hello");
@@ -94,7 +87,7 @@ function displaySpotify (userPick) {
           }
 
           for (i=0 ; i<data.tracks.items.length; i++){
-              console.log(data.tracks.items[0]);
+              console.log("Song Title: " + data.tracks.items[i].name);
               return console.log("for loop happened");
           }
        
@@ -113,7 +106,14 @@ function omdbMovie (userPick) {
     request(queryUrl, function(error, response, body) {
 
         if (!error && response.statusCode === 200) {
+          console.log("Title: " + JSON.parse(body).Title);
           console.log("Release Year: " + JSON.parse(body).Year);
+          console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+        //   console.log("Rotten Tomatoes Rating: " + JSON.parse(body).ratings.Value );
+          console.log("Country: " + JSON.parse(body).Country);
+          console.log("Language: " + JSON.parse(body).Language);
+          console.log("Plot: " + JSON.parse(body).Plot);
+          console.log("Actors: " + JSON.parse(body).Actors);
         };
 
         // console.log(response);
@@ -130,7 +130,6 @@ function omdbMovie (userPick) {
 function doWhatItSays () {
     fs.readFile("random.txt" , "UTF8" , function(error,data) {
 
-    
         var dataArr = data.split(",");
         var command = dataArr[0];
         var choice = dataArr[1];
